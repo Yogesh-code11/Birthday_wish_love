@@ -270,6 +270,21 @@
     border-radius:50%;
     filter:blur(1.5px);
   }
+  .balloon .shine2{
+    position:absolute; left:62%; top:52%;
+    width:12%; height:9%;
+    background:rgba(255,255,255,0.3);
+    border-radius:50%;
+    filter:blur(1px);
+  }
+  .balloon .knot{
+    position:absolute; left:50%; bottom:-2%;
+    width:8%; height:6%;
+    background:inherit;
+    filter:brightness(0.72);
+    border-radius:0 0 50% 50%;
+    transform:translateX(-50%);
+  }
   .balloon.hero-balloon{
     z-index:7;
     box-shadow:0 0 26px rgba(232,196,104,0.6);
@@ -331,6 +346,25 @@
   }
   .archer-dock.show{ opacity:1; transform:translateX(0); pointer-events:auto; }
   .archer-figure{ width:100%; height:100%; transform-origin:bottom center; }
+  .archer-dock.show .archer-figure{
+    animation:archerJumpIn 0.9s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes archerJumpIn{
+    0%{ transform:translateY(-42px) scale(0.9); }
+    55%{ transform:translateY(6px) scale(1.04); }
+    75%{ transform:translateY(-4px) scale(0.98); }
+    100%{ transform:translateY(0) scale(1); }
+  }
+  .archer-figure.pre-shot-hop{
+    animation:archerHop 0.5s ease-out;
+  }
+  @keyframes archerHop{
+    0%{ transform:translateY(0); }
+    35%{ transform:translateY(-14px); }
+    60%{ transform:translateY(0); }
+    80%{ transform:translateY(-4px); }
+    100%{ transform:translateY(0); }
+  }
   .archer-svg{ width:100%; height:100%; overflow:visible; display:block; }
 
   .arrow-flying{
@@ -499,7 +533,7 @@
   .heart-halo{
     position:absolute; left:50%; top:50%; width:145%; height:145%;
     transform:translate(-50%,-50%);
-    background:radial-gradient(circle, rgba(255,111,165,0.42) 0%, rgba(255,111,165,0.12) 45%, transparent 72%);
+    background:radial-gradient(circle, rgba(255,45,90,0.4) 0%, rgba(255,45,90,0.12) 45%, transparent 72%);
     filter:blur(4px);
     animation:heartbeatPulse 1.7s ease-in-out infinite;
     pointer-events:none; z-index:0;
@@ -529,11 +563,22 @@
   }
   .heart-message h2{
     font-family:var(--serif); font-weight:500; font-style:italic;
-    font-size:clamp(2rem, 6.2vw, 3.4rem);
+    font-size:clamp(1.9rem, 6vw, 3.2rem);
+    line-height:1.25;
     background:linear-gradient(180deg, #fff, var(--gold-soft) 55%, var(--gold));
     -webkit-background-clip:text; background-clip:text; color:transparent;
     text-shadow:0 0 50px rgba(255,111,165,0.45);
     margin-top:0.3rem;
+  }
+  .big-heart{
+    font-size:clamp(3.2rem, 11vw, 6rem);
+    margin-top:1.2rem;
+    animation:heartbeatBig 1.4s ease-in-out infinite;
+    filter:drop-shadow(0 0 45px rgba(255,45,90,0.7)) drop-shadow(0 0 90px rgba(255,111,165,0.35));
+  }
+  @keyframes heartbeatBig{
+    0%,100%{ transform:scale(1); } 14%{ transform:scale(1.16); } 28%{ transform:scale(1); }
+    42%{ transform:scale(1.1); } 60%,100%{ transform:scale(1); }
   }
 
   /* ============ SCENE 6 — GALLERY ============ */
@@ -656,6 +701,33 @@
     box-shadow:0 30px 90px rgba(224,37,122,0.4), 0 0 0 1px rgba(255,182,208,0.6) inset;
     white-space:pre-line;
     position:relative;
+    opacity:0; transform:scale(0.85) translateY(18px);
+    transition:opacity .7s cubic-bezier(.2,.8,.2,1), transform .7s cubic-bezier(.2,.8,.2,1);
+  }
+  #letterModal.show .letter-paper{ opacity:1; transform:scale(1) translateY(0); }
+  .letter-paper::after{
+    content:'';
+    position:absolute; inset:-3px; border-radius:14px;
+    background:linear-gradient(135deg, var(--gold), var(--rose), var(--ember), var(--gold));
+    background-size:300% 300%;
+    z-index:-1;
+    opacity:0.55;
+    filter:blur(10px);
+    animation:letterGlowShift 6s ease-in-out infinite;
+  }
+  @keyframes letterGlowShift{
+    0%,100%{ background-position:0% 50%; opacity:0.4; }
+    50%{ background-position:100% 50%; opacity:0.65; }
+  }
+  .letter-sparkle{
+    position:absolute; color:var(--gold);
+    font-size:0.8rem; opacity:0;
+    animation:letterSparkleTwinkle 2.6s ease-in-out infinite;
+    pointer-events:none;
+  }
+  @keyframes letterSparkleTwinkle{
+    0%,100%{ opacity:0; transform:scale(0.6) rotate(0deg); }
+    50%{ opacity:0.9; transform:scale(1.15) rotate(45deg); }
   }
   .letter-paper::before{
     content:'💗';
@@ -983,10 +1055,11 @@ I love you more than words could ever explain.</p>
       <div class="heart-halo"></div>
       <!-- balloons injected by JS, arranged into a heart shape -->
     </div>
-    <button class="glow-btn" id="btnBurstHeart">Burst the Balloons 💥</button>
+    <button class="glow-btn" id="btnBurstHeart">Pop the Heart ❤️</button>
     <div class="heart-message" id="heartMessage">
       <span class="heart-message-icon">❤️</span>
-      <h2>Happy Meri Jaan</h2>
+      <h2>Happy Birthday<br>Meri Jaan</h2>
+      <div class="big-heart">❤️</div>
     </div>
     <button class="glow-btn" id="btnHeartContinue">Continue to Our Story ❤️</button>
   </section>
@@ -1036,6 +1109,10 @@ I love you more than words could ever explain.</p>
 
 <div id="letterModal">
   <button class="letter-close" id="letterClose">✕</button>
+  <span class="letter-sparkle" style="top:8%; left:12%; animation-delay:0s;">✨</span>
+  <span class="letter-sparkle" style="top:18%; right:10%; animation-delay:0.8s;">✨</span>
+  <span class="letter-sparkle" style="bottom:14%; left:8%; animation-delay:1.5s;">✨</span>
+  <span class="letter-sparkle" style="bottom:10%; right:14%; animation-delay:0.4s;">✨</span>
   <div class="letter-paper">
     <!-- PERSONALIZE — YOUR LOVE LETTER HERE — replace freely, this is just a starting point -->
     <p style="text-align:center; margin-bottom:0.2rem;">🌸 💌 🌸</p>
@@ -1195,7 +1272,7 @@ I love you more than words could ever explain.</p>
     treeBuilt = true;
 
     const cx = 50, cy = 27, rx = 35, ry = 24; // canopy ellipse, in the same 0-100 % space as the branch tips
-    const stepX = 6.2, stepY = 6.4;
+    const stepX = 5.2, stepY = 5.4;
     const positions = [];
 
     for(let y = cy - ry; y <= cy + ry; y += stepY){
@@ -1351,6 +1428,10 @@ I love you more than words could ever explain.</p>
     btnShoot.style.opacity = '0.4';
     btnShoot.style.pointerEvents = 'none';
 
+    // a small anticipatory hop, coordinated with the draw
+    archerFigure.classList.add('pre-shot-hop');
+    setTimeout(()=> archerFigure.classList.remove('pre-shot-hop'), 520);
+
     // draw the string back, smoothly, over ~500ms
     tweenDraw(REST_X, DRAW_X, 520);
 
@@ -1406,10 +1487,11 @@ I love you more than words could ever explain.</p>
     // the big party poppers fire the instant the arrow lands
     fireConfetti();
 
+    const pinkFragments = ['#FF6FA5','#E27DB4','#FFB6D0','#FF9FCB'];
     balloons.forEach((b, i)=>{
       setTimeout(()=>{
         const r = b.getBoundingClientRect();
-        spawnRadialConfetti((r.left+r.width/2)/innerWidth, (r.top+r.height/2)/innerHeight, 7);
+        spawnPopBurst((r.left+r.width/2)/innerWidth, (r.top+r.height/2)/innerHeight, 8, pinkFragments);
         b.classList.add('burst');
       }, i*stagger);
     });
@@ -1532,6 +1614,38 @@ I love you more than words could ever explain.</p>
     if(!confettiRunning){ confettiRunning = true; requestAnimationFrame(confettiLoop); }
   }
 
+  // a premium balloon-pop burst: real balloon-rubber fragments + sparkle twinkles + confetti, mixed together
+  function spawnPopBurst(originXpct, originYpct, count, fragmentColors){
+    for(let i=0;i<count;i++){
+      const angle = Math.random()*Math.PI*2;
+      const speed = (4 + Math.random()*8) * confettiDPR;
+      const roll = Math.random();
+      let shape, color, w, h;
+      if(roll < 0.42){
+        shape = 'shard';
+        color = fragmentColors[Math.floor(Math.random()*fragmentColors.length)];
+        w = (5+Math.random()*5)*confettiDPR; h = (9+Math.random()*8)*confettiDPR;
+      } else if(roll < 0.68){
+        shape = 'sparkle';
+        color = Math.random() < 0.5 ? '#FFFFFF' : '#FFE9A8';
+        w = h = (4+Math.random()*4)*confettiDPR;
+      } else {
+        shape = Math.random() < 0.5 ? 'rect' : 'circle';
+        color = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+        w = (3+Math.random()*4)*confettiDPR; h = (6+Math.random()*6)*confettiDPR;
+      }
+      confettiParticles.push({
+        x: originXpct*confettiW, y: originYpct*confettiH,
+        vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed - 1.5*confettiDPR,
+        rot: Math.random()*Math.PI*2, vr: (Math.random()-0.5)*0.45,
+        color, w, h,
+        life:0, maxLife: 75+Math.random()*55,
+        shape
+      });
+    }
+    if(!confettiRunning){ confettiRunning = true; requestAnimationFrame(confettiLoop); }
+  }
+
   function fireConfetti(){
     spawnConfettiBurst(0.05, 0.98, 95, 1);
     spawnConfettiBurst(0.95, 0.98, 95, -1);
@@ -1556,6 +1670,21 @@ I love you more than words could ever explain.</p>
       cctx.globalAlpha = alpha;
       cctx.fillStyle = p.color;
       if(p.shape === 'rect'){ cctx.fillRect(-p.w/2, -p.h/2, p.w, p.h); }
+      else if(p.shape === 'shard'){
+        cctx.beginPath();
+        cctx.moveTo(0, -p.h/2);
+        cctx.quadraticCurveTo(p.w/2, 0, 0, p.h/2);
+        cctx.quadraticCurveTo(-p.w/2, 0, 0, -p.h/2);
+        cctx.fill();
+      }
+      else if(p.shape === 'sparkle'){
+        const s = p.w/2;
+        cctx.beginPath();
+        cctx.moveTo(0,-s); cctx.lineTo(s*0.28,-s*0.28); cctx.lineTo(s,0);
+        cctx.lineTo(s*0.28,s*0.28); cctx.lineTo(0,s); cctx.lineTo(-s*0.28,s*0.28);
+        cctx.lineTo(-s,0); cctx.lineTo(-s*0.28,-s*0.28); cctx.closePath();
+        cctx.fill();
+      }
       else { cctx.beginPath(); cctx.arc(0,0,p.w/2,0,Math.PI*2); cctx.fill(); }
       cctx.restore();
     });
@@ -1720,17 +1849,19 @@ I love you more than words could ever explain.</p>
     const minX = Math.min(...xs), maxX = Math.max(...xs);
     const minY = Math.min(...ys), maxY = Math.max(...ys);
     const baseSize = innerWidth < 640 ? 20 : 27;
+    // every balloon in the heart is red — varied just enough in shade for a rich, glossy, dimensional look
+    const redPalette = ['#FF3B5C','#E8112D','#FF5C7A','#C2102B','#FF1F4B'];
 
     raw.forEach(p=>{
       const px = 8 + ((p.x-minX)/(maxX-minX))*84 + (Math.random()*3-1.5);
       const py = 5 + ((p.y-minY)/(maxY-minY))*90 + (Math.random()*3-1.5);
       const b = document.createElement('div');
       b.className = 'balloon';
-      const color = balloonPalette[Math.floor(Math.random()*balloonPalette.length)];
+      const color = redPalette[Math.floor(Math.random()*redPalette.length)];
       const size = Math.round(baseSize * (0.75 + Math.random()*0.5));
       b.style.width = size + 'px';
       b.style.height = Math.round(size*1.22) + 'px';
-      b.style.background = `radial-gradient(circle at 32% 26%, ${color}f2, ${color}88 72%)`;
+      b.style.background = `radial-gradient(circle at 30% 24%, ${color}ff, ${color}cc 55%, ${color}88 85%)`;
       b.style.left = px + '%';
       b.style.top = py + '%';
       b.style.zIndex = String(10 + Math.round((1-p.scale)*10));
@@ -1739,6 +1870,12 @@ I love you more than words could ever explain.</p>
       const shine = document.createElement('div');
       shine.className = 'shine';
       b.appendChild(shine);
+      const shine2 = document.createElement('div');
+      shine2.className = 'shine2';
+      b.appendChild(shine2);
+      const knot = document.createElement('div');
+      knot.className = 'knot';
+      b.appendChild(knot);
       const str = document.createElement('div');
       str.className = 'string';
       str.style.height = (6 + Math.random()*8) + 'px';
@@ -1765,10 +1902,11 @@ I love you more than words could ever explain.</p>
       .sort((a,b)=> parseFloat(a.dataset.dist||0) - parseFloat(b.dataset.dist||0));
     const stagger = Math.max(9, Math.min(22, 1100/balloons.length));
 
+    const redFragments = ['#FF3B5C','#E8112D','#FF5C7A','#C2102B'];
     balloons.forEach((b, i)=>{
       setTimeout(()=>{
         const r = b.getBoundingClientRect();
-        spawnRadialConfetti((r.left+r.width/2)/innerWidth, (r.top+r.height/2)/innerHeight, 6);
+        spawnPopBurst((r.left+r.width/2)/innerWidth, (r.top+r.height/2)/innerHeight, 9, redFragments);
         b.classList.add('burst');
       }, i*stagger);
     });
@@ -1792,8 +1930,8 @@ I love you more than words could ever explain.</p>
     spawnPetals();
   });
 
-  function spawnPetals(){
-    const wrap = document.getElementById('stage');
+  function spawnPetals(container){
+    const wrap = container || document.getElementById('stage');
     for(let i=0;i<16;i++){
       const p = document.createElement('div');
       p.className = 'petal';
@@ -1815,6 +1953,7 @@ I love you more than words could ever explain.</p>
     envelopeEl.classList.add('open');
     setTimeout(()=>{
       letterModal.classList.add('show');
+      spawnPetals(letterModal);
     }, 900);
   });
   document.getElementById('letterClose').addEventListener('click', ()=>{
